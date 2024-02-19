@@ -1,5 +1,6 @@
 asyncio
 sqlalchemy
+asyncpg
 pytest
 pytest-asyncio
 faker
