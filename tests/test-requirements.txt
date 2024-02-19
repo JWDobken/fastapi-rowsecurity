@@ -1,7 +1,9 @@
+# module deps
 asyncio
 sqlalchemy
 asyncpg
+# test deps
 pytest
+pytest-cov
 pytest-asyncio
 faker
-pytest-cov
