@@ -1,0 +1,5 @@
+asyncio
+sqlalchemy
+pytest
+pytest-asyncio
+faker

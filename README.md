@@ -1,7 +1,7 @@
 <!-- These are examples of badges you might want to add to your README:
      please update the URLs accordingly
 
-[![Built Status](https://api.cirrus-ci.com/github/<USER>/fastapi-rowsecurity.svg?branch=main)](https://cirrus-ci.com/github/<USER>/fastapi-rowsecurity)
+[![Built Status](https://api.cirrus-ci.com/github/jwdobken/fastapi-rowsecurity.svg?branch=main)](https://cirrus-ci.com/github/<USER>/fastapi-rowsecurity)
 [![ReadTheDocs](https://readthedocs.org/projects/fastapi-rowsecurity/badge/?version=latest)](https://fastapi-rowsecurity.readthedocs.io/en/stable/)
 [![Coveralls](https://img.shields.io/coveralls/github/<USER>/fastapi-rowsecurity/main.svg)](https://coveralls.io/r/<USER>/fastapi-rowsecurity)
 [![PyPI-Server](https://img.shields.io/pypi/v/fastapi-rowsecurity.svg)](https://pypi.org/project/fastapi-rowsecurity/)
