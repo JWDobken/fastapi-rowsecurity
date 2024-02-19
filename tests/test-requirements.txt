@@ -3,3 +3,4 @@ sqlalchemy
 pytest
 pytest-asyncio
 faker
+pytest-cov

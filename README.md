@@ -12,7 +12,7 @@
 
 # FastAPI Row Security 🚣‍♂️
 
-Row-Level Security (RLS) in SQLAlchemy with [Row Security Policies](https://www.postgresql.org/docs/current/ddl-rowsecurity.html):
+Row-Level Security (RLS) in SQLAlchemy for PostgreSQL with [Row Security Policies](https://www.postgresql.org/docs/current/ddl-rowsecurity.html):
 
 - Restrict access to specific rows 🔒 based on user permissions, minimizing unauthorized data exposure.
 - Managing who sees what becomes a breeze 😎, without solely relying on application-level permissions.
