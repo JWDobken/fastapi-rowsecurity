@@ -1,1 +1,0 @@
-uvicorn simple:app --reload

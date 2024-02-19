@@ -10,15 +10,15 @@
 [![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Twitter)](https://twitter.com/fastapi-rowsecurity)
 -->
 
-# fastapi-rowsecurity 🚣‍♂️
+# FastAPI Row Security 🚣‍♂️
 
-Row-Level Security (RLS) in SQLAlchemy.
+Row-Level Security (RLS) in SQLAlchemy with [Row Security Policies](https://www.postgresql.org/docs/current/ddl-rowsecurity.html):
 
-- No wishful thinking about multi-tenancy!
-- Precise control over data access without solely relying on application-level permissions.
-- Using the database native [Row Security Policies](https://www.postgresql.org/docs/current/ddl-rowsecurity.html)
+- Restrict access to specific rows 🔒 based on user permissions, minimizing unauthorized data exposure.
+- Managing who sees what becomes a breeze 😎, without solely relying on application-level permissions.
+- Perfect for Scalability and Multi-Tenancy: keep the data playground organized 🏢, ensuring each tenant plays in their own sandbox.
 
-Can we finally start deploying on fridays?
+Can we finally start deploying on fridays? (_eh... no_)
 
 ```cmd
 pip install fastapi-rowsecurity

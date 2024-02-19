@@ -1,61 +1,55 @@
-from typing import Dict, Generator
+from typing import AsyncGenerator
 
-import pytest
-from fastapi.testclient import TestClient
-from sqlalchemy import create_engine, text
-from sqlalchemy.orm import Session, sessionmaker
+import pytest_asyncio
+from faker import Faker
+from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.orm import Session, declarative_base, relationship, sessionmaker
 
-from examples.simple import Base, User, app, get_session
-
-TEST_DB_URL_ADMIN = "postgresql://postgres:postgres@0.0.0.0:5432/test"
-TEST_DB_URL_WRITE = "postgresql://app_db_write:V11Xn3#c3$4r@0.0.0.0:5432/test"
+Base = declarative_base()
 
 
-@pytest.fixture(scope="session")
-def session(test_db_setup_sessionmaker) -> Generator[Session, None, None]:
-    with get_session() as session:
-        yield session
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True)
+    username = Column(String, unique=True, index=True)
+    items = relationship("Item", back_populates="owner")
 
 
-def fill_user_database(engine):
-    Session = sessionmaker(bind=engine, expire_on_commit=False)
-    with Session() as session:
-        db_user1 = User(username="user1", password="password1")
-        db_user2 = User(username="user2", password="password2")
-        session.add(db_user1)
-        session.add(db_user2)
-        session.commit()
+class Item(Base):
+    __tablename__ = "items"
 
-        session.execute(
-            text(
-                """
-    GRANT CONNECT ON DATABASE test TO app_db_write;
-    GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO app_db_write;
-    GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO app_db_write;
-"""
-            )
-        )
-        session.commit()
+    id = Column(Integer, primary_key=True)
+    title = Column(String, index=True)
+    owner_id = Column(Integer, ForeignKey("users.id"))
+    owner = relationship("User", back_populates="items")
 
 
-def create_db():
-    engine = create_engine(TEST_DB_URL_ADMIN)
-    Base.metadata.drop_all(bind=engine)
-    Base.metadata.create_all(bind=engine)
-    fill_user_database(engine)
+@pytest_asyncio.fixture()
+async def db_session() -> AsyncGenerator[AsyncSession, None]:
+    engine = create_async_engine(
+        "postgresql+asyncpg://jwdobken:postgres@127.0.0.1:5432/test_db", echo=True, future=True
+    )
 
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.drop_all)
+        await conn.run_sync(Base.metadata.create_all)
+    session = async_sessionmaker(engine)()
 
-def drop_db():
-    engine = create_engine(TEST_DB_URL_ADMIN)
-    Base.metadata.drop_all(bind=engine)
+    # Insert some fake data using Faker
+    faker = Faker()
+    users = [User(username=faker.user_name()) for _ in range(5)]
+    session.add_all(users)
+    await session.commit()
 
+    # Create a couple of items owned by the users
+    for user in users:
+        item1 = Item(title=faker.word(), owner=user)
+        item2 = Item(title=faker.word(), owner=user)
+        session.add(item1)
+        session.add(item2)
+    await session.commit()
 
-@pytest.fixture(scope="session")
-def client() -> Generator:
-    create_db()
-    with TestClient(app) as c:
-        yield c
-
-    # item = Item(
-    #     title=fake.sentence(nb_words=random.randint(2, 4)), description=fake.paragraph(), user_id=current_user.id
-    # )
+    yield session
+    await session.close()
