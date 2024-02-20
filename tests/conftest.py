@@ -24,14 +24,16 @@ async def session_example_1() -> AsyncGenerator[AsyncSession, None]:
 
     await superuser_session.execute(
         text(
-            f"""DO
-            $$
+            f"""DO $$
             BEGIN
-                IF NOT EXISTS (SELECT * from pg_user WHERE usename = '{WRITEUSER}') THEN
-                    CREATE ROLE {WRITEUSER} WITH PASSWORD '{WRITEUSERPASSWORD}';
-                END IF;
-            END
-            $$
+                BEGIN
+                    -- Attempt to create the role
+                    CREATE ROLE writeuser WITH PASSWORD 'writepassword';
+                EXCEPTION WHEN duplicate_object THEN
+                    -- If the role already exists, do nothing
+                    NULL;
+                END;
+            END $$;
             ;"""
         )
     )
