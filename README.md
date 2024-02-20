@@ -18,8 +18,41 @@ Row-Level Security (RLS) in SQLAlchemy for PostgreSQL with [Row Security Policie
 - Managing who sees what becomes a breeze 😎, without solely relying on application-level permissions.
 - Perfect for Scalability and Multi-Tenancy: keep the data playground organized 🏢, ensuring each tenant plays in their own sandbox.
 
-Can we finally start deploying on fridays? (_eh... no_)
+## Installation
+
+Use pip to install from PyPI:
 
 ```cmd
 pip install fastapi-rowsecurity
 ```
+
+## Basic Usage
+
+> WARNING!! The [database superuser](https://www.postgresql.org/docs/current/role-attributes.html) bypasses all permission checks, except the right to log in. This is a dangerous privilege and should not be used in combination with RLS.
+
+...
+
+## Disable `BYPASSRLS`
+
+In PostgreSQL, the BYPASSRLS privilege allows a role to bypass row-level security (RLS) policies. This is a powerful privilege that allows users to access data without being subject to the restrictions imposed by RLS policies. Disabling BYPASSRLS is crucial for maintaining the integrity of your row-level security policies.
+
+To revoke the BYPASSRLS privilege from all roles, you can execute the following SQL statement:
+
+```sql
+REVOKE BYPASSRLS ON DATABASE your_database_name FROM PUBLIC;
+```
+
+Replace your_database_name with the name of your database.
+
+This statement revokes the BYPASSRLS privilege from the PUBLIC role, which effectively removes it from all roles in the database.
+
+Make sure you have appropriate privileges to execute this command, typically superuser privileges or ownership of the database.
+
+get all roles that have
+
+```sql
+SELECT * FROM pg_roles WHERE rolbypass = TRUE;
+ALTER ROLE jwdobken WITH NOBYPASSRLS;
+```
+
+BYPASSRLS | NOBYPASSRLS – determine if the role is to bypass the row-level security (RLS) policy.
