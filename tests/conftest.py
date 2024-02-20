@@ -27,10 +27,8 @@ async def session_example_1() -> AsyncGenerator[AsyncSession, None]:
             f"""DO $$
             BEGIN
                 BEGIN
-                    -- Attempt to create the role
-                    CREATE ROLE writeuser WITH PASSWORD 'writepassword';
+                    CREATE ROLE {WRITEUSER} WITH LOGIN PASSWORD '{WRITEUSERPASSWORD}';
                 EXCEPTION WHEN duplicate_object THEN
-                    -- If the role already exists, do nothing
                     NULL;
                 END;
             END $$;
