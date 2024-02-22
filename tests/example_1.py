@@ -1,7 +1,10 @@
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import declarative_base, relationship
 
+from fastapi_rowsecurity import Permissive, set_rls_policies
+
 Base = declarative_base()
+set_rls_policies(Base)
 
 
 class User(Base):
@@ -19,3 +22,10 @@ class Item(Base):
     title = Column(String, index=True)
     owner_id = Column(Integer, ForeignKey("users.id"))
     owner = relationship("User", back_populates="items")
+
+    @classmethod
+    def __rls_policies__(cls):
+        return [
+            Permissive(principal="true", policy="SELECT"),
+            Permissive(principal="true", policy=["UPDATE"]),
+        ]

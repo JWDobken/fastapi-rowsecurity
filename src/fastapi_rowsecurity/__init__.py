@@ -14,3 +14,8 @@ except PackageNotFoundError:  # pragma: no cover
     __version__ = "unknown"
 finally:
     del version, PackageNotFoundError
+
+from .main import set_rls_policies
+from .schemas import Permissive, Policy, Restrictive
+
+__all__ = ["set_rls_policies", "Permissive", "Policy", "Restrictive"]

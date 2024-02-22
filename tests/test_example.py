@@ -36,10 +36,12 @@ async def test_number_of_users(session_example_1):
 async def test_owner_can_edit(session_example_1):
     session = session_example_1
     # edit an item that is owned by user 1
-    statement = """
+    result = await session.execute(text("SELECT id FROM items where owner_id =1 limit 1"))
+    item_id = result.scalar_one()
+    statement = f"""
     UPDATE items
     SET title = 'user_1_can_edit_its_own_items'
-    WHERE items.owner_id = 1
+    WHERE id = {item_id}
     """
     await session.execute(text(statement))
     await session.commit()
@@ -49,20 +51,12 @@ async def test_owner_can_edit(session_example_1):
 async def test_nonowner_cannot_edit(session_example_1):
     session = session_example_1
     # edit an item that is NOT owned by user 1
-    statement = """
+    result = await session.execute(text("SELECT id FROM items where owner_id != 1 limit 1"))
+    item_id = result.scalar_one()
+    statement = f"""
     UPDATE items
     SET title = 'user_1_can_edit_other_items'
-    WHERE items.owner_id != 1
+    WHERE id = {item_id}
     """
     await session.execute(text(statement))
     await session.commit()
-
-
-"""
-ALTER TABLE items FORCE ROW LEVEL SECURITY;
-
-CREATE POLICY edit_and_delete_policy ON items
-FOR UPDATE, DELETE
-TO ALL
-USING (owner_id = 1);
-"""
