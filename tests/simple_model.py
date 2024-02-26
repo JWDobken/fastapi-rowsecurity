@@ -2,6 +2,7 @@ from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import declarative_base, relationship
 
 from fastapi_rowsecurity import Permissive, set_rls_policies
+from fastapi_rowsecurity.principals import Authenticated, UserOwner
 
 Base = declarative_base()
 set_rls_policies(Base)
@@ -26,6 +27,6 @@ class Item(Base):
     @classmethod
     def __rls_policies__(cls):
         return [
-            Permissive(principal="true", policy="SELECT"),
-            Permissive(principal="true", policy=["UPDATE"]),
+            Permissive(principal=Authenticated, policy="SELECT"),
+            Permissive(principal=UserOwner, policy=["INSERT", "UPDATE", "DELETE"]),
         ]

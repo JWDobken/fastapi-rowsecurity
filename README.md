@@ -18,6 +18,9 @@ Row-Level Security (RLS) in SQLAlchemy for PostgreSQL with [Row Security Policie
 - Managing who sees what becomes a breeze 😎, without solely relying on application-level permissions.
 - Perfect for Scalability and Multi-Tenancy: keep the data playground organized 🏢, ensuring each tenant plays in their own sandbox.
 
+> **Warning**
+> Understand that the [database superuser](https://www.postgresql.org/docs/current/role-attributes.html) bypasses all permission checks, except the right to log in. This is a dangerous privilege and should not be used in combination with RLS.
+
 ## Installation
 
 Use pip to install from PyPI:
@@ -28,31 +31,53 @@ pip install fastapi-rowsecurity
 
 ## Basic Usage
 
-> WARNING!! The [database superuser](https://www.postgresql.org/docs/current/role-attributes.html) bypasses all permission checks, except the right to log in. This is a dangerous privilege and should not be used in combination with RLS.
+In your SQLAlchemy model, create a `classmethod` named `__rls_policies__` that returns a list of `Permissive` or `Restrictive` policies:
 
-...
+```py
+from fastapi_rowsecurity import Permissive, set_rls_policies
+from fastapi_rowsecurity.principals import Authenticated, UserOwner
 
-## Disable `BYPASSRLS`
+Base = declarative_base()
+set_rls_policies(Base) # <- create all policies
 
-In PostgreSQL, the BYPASSRLS privilege allows a role to bypass row-level security (RLS) policies. This is a powerful privilege that allows users to access data without being subject to the restrictions imposed by RLS policies. Disabling BYPASSRLS is crucial for maintaining the integrity of your row-level security policies.
 
-To revoke the BYPASSRLS privilege from all roles, you can execute the following SQL statement:
+class Item(Base):
+    __tablename__ = "items"
 
-```sql
-REVOKE BYPASSRLS ON DATABASE your_database_name FROM PUBLIC;
+    id = Column(Integer, primary_key=True)
+    title = Column(String, index=True)
+    owner_id = Column(Integer, ForeignKey("users.id"))
+    owner = relationship("User", back_populates="items")
+
+    @classmethod
+    def __rls_policies__(cls):
+        return [
+            Permissive(principal=Authenticated, policy="SELECT"),
+            Permissive(principal=UserOwner, policy=["INSERT", "UPDATE", "DELETE"]),
+        ]
 ```
 
-Replace your_database_name with the name of your database.
+The above implies that any authenticated user can read all items; but can only insert, update or delete owned items.
 
-This statement revokes the BYPASSRLS privilege from the PUBLIC role, which effectively removes it from all roles in the database.
+- `principal`: any Boolean expression as a string;
+- `policy`: any of `ALL`/`SELECT`/`INSERT`/`UPDATE`/`DELETE`.
 
-Make sure you have appropriate privileges to execute this command, typically superuser privileges or ownership of the database.
+Next, attach the `current_user_id` (or other [runtime parameters](https://www.postgresql.org/docs/current/sql-set.html) that you need) to the user session:
 
-get all roles that have
-
-```sql
-SELECT * FROM pg_roles WHERE rolbypass = TRUE;
-ALTER ROLE jwdobken WITH NOBYPASSRLS;
+```py
+# ... def get_session() -> Session:
+session.execute(text(f"SET app.current_user_id = {current_user_id}"))
 ```
 
-BYPASSRLS | NOBYPASSRLS – determine if the role is to bypass the row-level security (RLS) policy.
+Find a simple example in the ![tests](./tests/simple_model.py).
+
+## Backlog first release
+
+- [ ] Change policies when model changes (prio!!)
+- [ ] Documentation
+
+then ...
+
+- [ ] Support for Alembic
+- [ ] How to deal with `BYPASSRLS` such as table owners?
+- [ ] When item is tried to delete, no error is raised?

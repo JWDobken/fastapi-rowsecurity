@@ -5,16 +5,18 @@ from faker import Faker
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
-from .example_1 import Base, Item, User
+from .simple_model import Base, Item, User
 
 WRITEUSER = "writeuser"
 WRITEUSERPASSWORD = "writepassword"
 
 
 @pytest_asyncio.fixture()
-async def session_example_1() -> AsyncGenerator[AsyncSession, None]:
+async def simple_session_user1() -> AsyncGenerator[AsyncSession, None]:
+    """Return a session with user 1 for the simple model."""
+
     superuser_engine = create_async_engine(
-        "postgresql+asyncpg://jwdobken:postgres@127.0.0.1:5432/test_db", echo=True, future=True
+        "postgresql+asyncpg://maikbokx:postgres@127.0.0.1:5432/test_db", echo=True, future=True
     )
 
     async with superuser_engine.begin() as conn:
@@ -61,5 +63,6 @@ async def session_example_1() -> AsyncGenerator[AsyncSession, None]:
         f"postgresql+asyncpg://{WRITEUSER}:{WRITEUSERPASSWORD}@127.0.0.1:5432/test_db", echo=True, future=True
     )
     writeuser_session = async_sessionmaker(writeuser_engine)()
+    await writeuser_session.execute(text(f"SET app.current_user_id = 1"))
     yield writeuser_session
     await writeuser_session.close()

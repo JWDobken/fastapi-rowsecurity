@@ -1,6 +1,5 @@
 from typing import Type
 
-import asyncpg
 from sqlalchemy import event
 
 # from sqlalchemy.dialects.postgresql.asyncpg import ProgrammingError
@@ -13,8 +12,7 @@ from .policies import get_policies
 def set_rls_policies(Base: Type[DeclarativeMeta]):
     @event.listens_for(Base.metadata, "after_create")
     def receive_after_create(target, connection, tables, **kw):
-        functions = get_functions()
         policies = get_policies(Base)
-        for ent in [*functions, *policies]:
+        for ent in policies:
             connection.execute(ent.to_sql_statement_create())
         connection.commit()
