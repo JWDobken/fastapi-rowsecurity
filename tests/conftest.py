@@ -16,7 +16,7 @@ async def simple_session_user1() -> AsyncGenerator[AsyncSession, None]:
     """Return a session with user 1 for the simple model."""
 
     superuser_engine = create_async_engine(
-        "postgresql+asyncpg://maikbokx:postgres@127.0.0.1:5432/test_db", echo=True, future=True
+        "postgresql+asyncpg://jwdobken:postgres@127.0.0.1:5432/test_db", echo=True, future=True
     )
 
     async with superuser_engine.begin() as conn:
