@@ -14,8 +14,7 @@
 
 Row-Level Security (RLS) in SQLAlchemy for PostgreSQL with [Row Security Policies](https://www.postgresql.org/docs/current/ddl-rowsecurity.html):
 
-- Restrict access to specific rows 🔒 based on user permissions, minimizing unauthorized data exposure.
-- Managing who sees what becomes a breeze 😎, without solely relying on application-level permissions.
+- Restrict access to specific rows 🔒 minimizing unauthorized data exposure.
 - Perfect for Scalability and Multi-Tenancy: keep the data playground organized 🏢, ensuring each tenant plays in their own sandbox.
 
 > **Warning**
