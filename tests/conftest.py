@@ -44,7 +44,8 @@ async def simple_session_user1() -> AsyncGenerator[AsyncSession, None]:
     )
     await superuser_session.execute(
         text(
-            f"GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO {WRITEUSER};"
+            "GRANT SELECT, INSERT, UPDATE, DELETE "
+            f"ON ALL TABLES IN SCHEMA public TO {WRITEUSER};"
         )
     )
     await superuser_session.commit()
@@ -71,6 +72,6 @@ async def simple_session_user1() -> AsyncGenerator[AsyncSession, None]:
         future=True,
     )
     writeuser_session = async_sessionmaker(writeuser_engine)()
-    await writeuser_session.execute(text(f"SET app.current_user_id = 1"))
+    await writeuser_session.execute(text("SET app.current_user_id = 1"))
     yield writeuser_session
     await writeuser_session.close()

@@ -17,7 +17,8 @@ RETURNS void LANGUAGE plpgsql AS $$
                 WHERE schemaname = target_schema AND tablename = target_table_name
             )
             LOOP
-                sql_text := format('DROP POLICY "%s" on %I.%I', policy_name, target_schema, target_table_name);
+                sql_text := format('DROP POLICY "%s" on %I.%I', 
+                    policy_name, target_schema, target_table_name);
                 RAISE NOTICE '%', sql_text;
                 EXECUTE sql_text;
             END LOOP;

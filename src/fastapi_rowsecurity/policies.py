@@ -26,7 +26,10 @@ def get_policies(Base) -> List[PGPolicy]:
                 else permission.policy
             )
             for pol in table_policies:
-                policy_name = f"{table_name}_{permission.__class__.__name__}_{pol}_policy_{ix}".lower()
+                policy_name = (
+                    f"{table_name}_{permission.__class__.__name__}"
+                    f"_{pol}_policy_{ix}".lower()
+                )
                 if pol in ["ALL", "SELECT", "UPDATE", "DELETE"]:
                     policy_lists.append(
                         PGPolicy(
