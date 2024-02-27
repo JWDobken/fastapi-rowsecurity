@@ -13,10 +13,18 @@ def get_policies(Base) -> List[PGPolicy]:
         table_name = mapper.tables[0].fullname
         schema_name = mapper.tables[0].schema or "public"
         # Set the default row-level security policy
-        policy_lists.append(EnableRowLevelSecurity(schema=schema_name, on_entity=table_name))
-        policy_lists.append(ForceRowLevelSecurity(schema=schema_name, on_entity=table_name))
+        policy_lists.append(
+            EnableRowLevelSecurity(schema=schema_name, on_entity=table_name)
+        )
+        policy_lists.append(
+            ForceRowLevelSecurity(schema=schema_name, on_entity=table_name)
+        )
         for ix, permission in enumerate(mapper.class_.__rls_policies__()):
-            table_policies = [permission.policy] if isinstance(permission.policy, str) else permission.policy
+            table_policies = (
+                [permission.policy]
+                if isinstance(permission.policy, str)
+                else permission.policy
+            )
             for pol in table_policies:
                 policy_name = f"{table_name}_{permission.__class__.__name__}_{pol}_policy_{ix}".lower()
                 if pol in ["ALL", "SELECT", "UPDATE", "DELETE"]:

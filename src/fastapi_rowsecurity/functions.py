@@ -1,7 +1,6 @@
 from typing import List
 
 from alembic_utils.pg_function import PGFunction
-from sqlalchemy import Connection
 
 drop_all_policies_on_table = PGFunction(
     schema="public",
@@ -29,4 +28,3 @@ END $$;
 
 def get_functions() -> List[PGFunction]:
     return []
-    return [drop_all_policies_on_table]
