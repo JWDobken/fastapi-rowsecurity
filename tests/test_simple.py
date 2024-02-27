@@ -40,7 +40,10 @@ async def test_create_own_item(simple_session_user1):
 async def test_create_other_item(simple_session_user1):
     session = simple_session_user1
     # create an item that is not owned by user 1
-    with pytest.raises(ProgrammingError, match=r'.*new row violates row-level security policy for table "items"'):
+    with pytest.raises(
+        ProgrammingError,
+        match=r'.*new row violates row-level security policy for table "items"',
+    ):
         new_item = Item(id=11, title="its mine!", owner_id=2)
         session.add(new_item)
         await session.commit()

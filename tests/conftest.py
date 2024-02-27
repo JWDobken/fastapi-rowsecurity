@@ -16,7 +16,9 @@ async def simple_session_user1() -> AsyncGenerator[AsyncSession, None]:
     """Return a session with user 1 for the simple model."""
 
     superuser_engine = create_async_engine(
-        "postgresql+asyncpg://jwdobken:postgres@127.0.0.1:5432/test_db", echo=True, future=True
+        "postgresql+asyncpg://jwdobken:postgres@127.0.0.1:5432/test_db",
+        echo=True,
+        future=True,
     )
 
     async with superuser_engine.begin() as conn:
@@ -37,9 +39,13 @@ async def simple_session_user1() -> AsyncGenerator[AsyncSession, None]:
             ;"""
         )
     )
-    await superuser_session.execute(text(f"GRANT CONNECT ON DATABASE test_db TO {WRITEUSER};"))
     await superuser_session.execute(
-        text(f"GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO {WRITEUSER};")
+        text(f"GRANT CONNECT ON DATABASE test_db TO {WRITEUSER};")
+    )
+    await superuser_session.execute(
+        text(
+            f"GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO {WRITEUSER};"
+        )
     )
     await superuser_session.commit()
 
@@ -60,7 +66,9 @@ async def simple_session_user1() -> AsyncGenerator[AsyncSession, None]:
 
     # RETURN WRITE USERSESSION
     writeuser_engine = create_async_engine(
-        f"postgresql+asyncpg://{WRITEUSER}:{WRITEUSERPASSWORD}@127.0.0.1:5432/test_db", echo=True, future=True
+        f"postgresql+asyncpg://{WRITEUSER}:{WRITEUSERPASSWORD}@127.0.0.1:5432/test_db",
+        echo=True,
+        future=True,
     )
     writeuser_session = async_sessionmaker(writeuser_engine)()
     await writeuser_session.execute(text(f"SET app.current_user_id = 1"))
