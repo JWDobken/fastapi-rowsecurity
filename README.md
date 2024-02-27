@@ -81,3 +81,7 @@ then ...
 - [ ] Support for Alembic
 - [ ] How to deal with `BYPASSRLS` such as table owners?
 - [ ] When item is tried to delete, no error is raised?
+
+## Final note
+
+At the moment this module is work-in-progress and therefore experimental. All feedback and ideas are 100% welcome! So feel free to contribute or reach out to me!
