@@ -14,8 +14,7 @@
 
 Row-Level Security (RLS) in SQLAlchemy for PostgreSQL with [Row Security Policies](https://www.postgresql.org/docs/current/ddl-rowsecurity.html):
 
-- Restrict access to specific rows 🔒 based on user permissions, minimizing unauthorized data exposure.
-- Managing who sees what becomes a breeze 😎, without solely relying on application-level permissions.
+- Restrict access to specific rows 🔒 minimizing unauthorized data exposure.
 - Perfect for Scalability and Multi-Tenancy: keep the data playground organized 🏢, ensuring each tenant plays in their own sandbox.
 
 > **Warning**
@@ -81,3 +80,8 @@ then ...
 - [ ] Support for Alembic
 - [ ] How to deal with `BYPASSRLS` such as table owners?
 - [ ] When item is tried to delete, no error is raised?
+- [ ] Python 3.11
+
+## Final note
+
+At the moment this module is work-in-progress and therefore experimental. All feedback and ideas are 100% welcome! So feel free to contribute or reach out to me!

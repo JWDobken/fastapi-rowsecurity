@@ -4,9 +4,10 @@ from sqlalchemy import text as sql_text
 
 
 class EnableRowLevelSecurity(OnEntityMixin, ReplaceableEntity):
-
     def __init__(self, schema: str, on_entity: str, **kwargs):
-        super().__init__(schema=schema, on_entity=on_entity, definition="", signature="")
+        super().__init__(
+            schema=schema, on_entity=on_entity, definition="", signature=""
+        )
 
     def to_sql_statement_create(self):
         return sql_text(f"ALTER TABLE {self.on_entity} ENABLE ROW LEVEL SECURITY;")
@@ -16,9 +17,10 @@ class EnableRowLevelSecurity(OnEntityMixin, ReplaceableEntity):
 
 
 class ForceRowLevelSecurity(OnEntityMixin, ReplaceableEntity):
-
     def __init__(self, schema: str, on_entity: str, **kwargs):
-        super().__init__(schema=schema, on_entity=on_entity, definition="", signature="")
+        super().__init__(
+            schema=schema, on_entity=on_entity, definition="", signature=""
+        )
 
     def to_sql_statement_create(self):
         return sql_text(f"ALTER TABLE {self.on_entity} FORCE ROW LEVEL SECURITY;")

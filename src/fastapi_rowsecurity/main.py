@@ -1,11 +1,8 @@
 from typing import Type
 
 from sqlalchemy import event
-
-# from sqlalchemy.dialects.postgresql.asyncpg import ProgrammingError
 from sqlalchemy.ext.declarative import DeclarativeMeta
 
-from .functions import get_functions
 from .policies import get_policies
 
 
