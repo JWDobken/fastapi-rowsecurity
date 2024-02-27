@@ -80,6 +80,7 @@ then ...
 - [ ] Support for Alembic
 - [ ] How to deal with `BYPASSRLS` such as table owners?
 - [ ] When item is tried to delete, no error is raised?
+- [ ] Python 3.11
 
 ## Final note
 
