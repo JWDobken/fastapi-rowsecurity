@@ -4,8 +4,6 @@ from sqlalchemy import text
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.declarative import DeclarativeMeta
 
-from .schemas import Permissive, Policy, Restrictive
-
 
 def create_policies(Base: Type[DeclarativeMeta], connection: Connection):
     """Create policies for `Base.metadata.create_all()`."""

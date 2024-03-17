@@ -58,7 +58,7 @@ class DisableRlsOp(MigrateOperation):
 
 
 @Operations.implementation_for(EnableRlsOp)
-def render_enable_rls(operations, operation):
+def enable_rls(operations, operation):
     if operation.schemaname is not None:
         name = "%s.%s" % (operation.schemaname, operation.tablename)
     else:
@@ -67,7 +67,7 @@ def render_enable_rls(operations, operation):
 
 
 @Operations.implementation_for(DisableRlsOp)
-def drop_sequence(operations, operation):
+def disable_rls(operations, operation):
     if operation.schemaname is not None:
         name = "%s.%s" % (operation.schemaname, operation.sequence_name)
     else:
