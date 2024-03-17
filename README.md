@@ -30,14 +30,14 @@ pip install fastapi-rowsecurity
 
 ## Basic Usage
 
-In your SQLAlchemy model, create a `classmethod` named `__rls_policies__` that returns a list of `Permissive` or `Restrictive` policies:
+In your SQLAlchemy model, create an attribute named `__rls_policies__` that is a list of `Permissive` or `Restrictive` policies:
 
 ```py
-from fastapi_rowsecurity import Permissive, set_rls_policies
+from fastapi_rowsecurity import Permissive, register_rls
 from fastapi_rowsecurity.principals import Authenticated, UserOwner
 
 Base = declarative_base()
-set_rls_policies(Base) # <- create all policies
+register_rls(Base) # <- create all policies
 
 
 class Item(Base):
@@ -48,18 +48,17 @@ class Item(Base):
     owner_id = Column(Integer, ForeignKey("users.id"))
     owner = relationship("User", back_populates="items")
 
-    @classmethod
-    def __rls_policies__(cls):
-        return [
-            Permissive(principal=Authenticated, policy="SELECT"),
-            Permissive(principal=UserOwner, policy=["INSERT", "UPDATE", "DELETE"]),
+
+    __rls_policies__ = [
+            Permissive(expr=Authenticated, cmd="SELECT"),
+            Permissive(expr=UserOwner, cmd=["INSERT", "UPDATE", "DELETE"]),
         ]
 ```
 
 The above implies that any authenticated user can read all items; but can only insert, update or delete owned items.
 
-- `principal`: any Boolean expression as a string;
-- `policy`: any of `ALL`/`SELECT`/`INSERT`/`UPDATE`/`DELETE`.
+- `expr`: any Boolean expression as a string;
+- `cmd`: any command of `ALL`/`SELECT`/`INSERT`/`UPDATE`/`DELETE`.
 
 Next, attach the `current_user_id` (or other [runtime parameters](https://www.postgresql.org/docs/current/sql-set.html) that you need) to the user session:
 
@@ -78,9 +77,9 @@ Find a simple example in the ![tests](./tests/simple_model.py).
 then ...
 
 - [ ] Support for Alembic
-- [ ] How to deal with `BYPASSRLS` such as table owners?
 - [ ] When item is tried to delete, no error is raised?
 - [ ] Python 3.11
+- [ ] Coverage report
 
 ## Final note
 
