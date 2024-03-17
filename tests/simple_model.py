@@ -1,11 +1,11 @@
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import declarative_base, relationship
 
-from fastapi_rowsecurity import Permissive, set_rls_policies
+from fastapi_rowsecurity import Permissive, register_rls
 from fastapi_rowsecurity.principals import Authenticated, UserOwner
 
 Base = declarative_base()
-set_rls_policies(Base)
+register_rls(Base)
 
 
 class User(Base):
@@ -24,9 +24,7 @@ class Item(Base):
     owner_id = Column(Integer, ForeignKey("users.id"))
     owner = relationship("User", back_populates="items")
 
-    @classmethod
-    def __rls_policies__(cls):
-        return [
-            Permissive(principal=Authenticated, policy="SELECT"),
-            Permissive(principal=UserOwner, policy=["INSERT", "UPDATE", "DELETE"]),
-        ]
+    __rls_policies__ = [
+        Permissive(expr=Authenticated, cmd="SELECT"),
+        Permissive(expr=UserOwner, cmd=["INSERT", "UPDATE", "DELETE"]),
+    ]
